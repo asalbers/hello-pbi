@@ -1,0 +1,51 @@
+name: porter-hello
+version: 0.1.0
+description: "An example Porter configuration"
+registry: ghcr.io/asalbers
+
+# If you want to customize the Dockerfile in use, uncomment the line below and update the referenced file. 
+# See https://porter.sh/custom-dockerfile/
+#dockerfile: Dockerfile.tmpl
+
+mixins:
+  - exec
+  - pbicli
+
+install:
+  - pbicli:
+      description: "hello pbicli"
+      arguments:
+        - login
+        - service-principal
+      flags:
+        service-principal: ""
+        p: "{{bundle.credentials.PBICLI_PRINCIPAL}}"
+        s: "{{bundle.credentials.PBICLI_SECRET}}"
+        t: "{{bundle.credentials.PBICLI_TENANT}}"
+
+
+upgrade:
+  - exec:
+      description: "World 2.0"
+      command: ./helpers.sh
+      arguments:
+        - upgrade
+
+uninstall:
+  - exec:
+      description: "Uninstall Hello World"
+      command: ./helpers.sh
+      arguments:
+        - uninstall
+
+
+credentials:
+  - name: PBICLI_PRINCIPAL
+    description: "login username for tower"
+    env: PBICLI_PRINCIPAL
+  - name: PBICLI_SECRET
+    description: "tower user password"
+    env: PBICLI_SECRET
+  - name: PBICLI_TENANT
+    description: ""
+    env: PBICLI_TENANT 
